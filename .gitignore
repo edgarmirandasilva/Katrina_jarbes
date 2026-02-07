@@ -38,6 +38,7 @@ ENV/
 # Memory store
 memory_store/
 workspace/
+test_memory/
 
 # Logs
 *.log

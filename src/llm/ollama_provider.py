@@ -153,7 +153,7 @@ class OllamaProvider(BaseLLMProvider):
                 url = f"{self.host}/api/tags"
                 response = self.client.get(url, timeout=5)
                 return response.status_code == 200
-        except:
+        except Exception:
             return False
     
     def list_models(self) -> List[str]:
@@ -175,5 +175,5 @@ class OllamaProvider(BaseLLMProvider):
                 response = self.client.get(url, timeout=5)
                 response.raise_for_status()
                 return [m['name'] for m in response.json().get('models', [])]
-        except:
+        except Exception:
             return []

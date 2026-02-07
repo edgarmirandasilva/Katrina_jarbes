@@ -20,12 +20,12 @@ def test_calculator_skill():
     
     # Test addition
     result = skill.execute(expression="5 + 3")
-    assert result['success'] == True
+    assert result['success']
     assert result['result'] == 8
     
     # Test multiplication
     result = skill.execute(expression="10 * 5")
-    assert result['success'] == True
+    assert result['success']
     assert result['result'] == 50
     
     print("✅ Calculator skill tests passed")

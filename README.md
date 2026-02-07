@@ -10,6 +10,11 @@ Um agente Python modular com arquitetura moderna que pode executar localmente, c
   - Memória de curto prazo: Histórico de conversação recente
   - Memória de longo prazo: Armazenamento persistente com busca
 - **Processamento de Linguagem Natural**: Compreende comandos em linguagem natural
+- **Integração com LLMs** ✨ NOVO:
+  - OpenAI (GPT-3.5, GPT-4)
+  - Anthropic (Claude 3)
+  - Ollama (modelos locais: Llama2, Mistral, etc.)
+  - Funciona perfeitamente sem LLM (modo básico)
 - **Técnicas Modernas de Agentes**:
   - Tool Calling (chamada de ferramentas)
   - Chain-of-Thought (raciocínio em cadeia)
@@ -88,6 +93,11 @@ python examples/interactive_example.py
 python examples/custom_skill_example.py
 ```
 
+#### Integração com LLMs
+```bash
+python examples/llm_integration_example.py
+```
+
 ## 💡 Uso
 
 ### Exemplo Simples
@@ -95,7 +105,7 @@ python examples/custom_skill_example.py
 ```python
 from src.agent import Agent
 
-# Inicializar o agente
+# Inicializar o agente (modo básico - sem LLM)
 agent = Agent(name="Katrina", memory_dir="./memory_store")
 
 # Processar comandos em linguagem natural
@@ -108,6 +118,24 @@ print(response)  # "Successfully wrote to message.txt"
 response = agent.process("list files")
 print(response)  # "Files in workspace: message.txt"
 ```
+
+### Exemplo com LLM (Ollama Local)
+
+```python
+from src.agent import Agent
+
+# Inicializar com Ollama para raciocínio aprimorado
+agent = Agent(
+    name="Katrina",
+    llm_provider="ollama",
+    llm_config={'ollama_model': 'llama2'}
+)
+
+# O agente agora usa LLM para raciocínio mais avançado
+response = agent.process("calculate 42 * 13")
+```
+
+Para mais detalhes sobre integração com LLMs, veja [LLM_INTEGRATION.md](LLM_INTEGRATION.md).
 
 ### Comandos Disponíveis
 
@@ -280,7 +308,7 @@ Edgar Miranda Silva
 
 ## 🔮 Roadmap
 
-- [ ] Integração com LLMs externos (OpenAI, Anthropic)
+- [x] Integração com LLMs externos (OpenAI, Anthropic, Ollama) ✅
 - [ ] Suporte a embeddings com ChromaDB
 - [ ] Skills adicionais (web scraping, APIs, etc.)
 - [ ] Interface web com Streamlit/Gradio

@@ -1,8 +1,9 @@
 """
 Agent Core - Main agent orchestrator implementing the action loop
+Enhanced with optional LLM integration for improved reasoning
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from .reasoning_engine import ReasoningEngine
 from .nlp_processor import NaturalLanguageProcessor
 from ..memory.memory_manager import MemoryManager
@@ -17,19 +18,61 @@ class Agent:
     - Reflection
     - Planning
     - Action loops
+    - Optional LLM integration (OpenAI, Anthropic, Ollama)
     """
     
-    def __init__(self, name: str = "Katrina", memory_dir: str = "./memory_store", max_iterations: int = 10):
+    def __init__(self, 
+                 name: str = "Katrina", 
+                 memory_dir: str = "./memory_store", 
+                 max_iterations: int = 10,
+                 llm_provider: str = "none",
+                 llm_config: Optional[Dict[str, Any]] = None):
+        """
+        Initialize the agent
+        
+        Args:
+            name: Agent name
+            memory_dir: Directory for persistent memory
+            max_iterations: Maximum action loop iterations
+            llm_provider: LLM provider to use ('openai', 'anthropic', 'ollama', or 'none')
+                        Default: 'none' (agent works without LLM)
+            llm_config: Optional LLM configuration dict with keys:
+                       - openai_api_key: OpenAI API key
+                       - anthropic_api_key: Anthropic API key
+                       - openai_model: OpenAI model name
+                       - anthropic_model: Anthropic model name
+                       - ollama_model: Ollama model name
+                       - ollama_host: Ollama server URL
+        """
         self.name = name
         self.max_iterations = max_iterations
+        
+        # Initialize LLM if requested
+        self.llm_manager = None
+        if llm_provider.lower() != "none":
+            try:
+                from ..llm import LLMManager
+                llm_config = llm_config or {}
+                self.llm_manager = LLMManager(
+                    preferred_provider=llm_provider,
+                    **llm_config
+                )
+            except Exception as e:
+                print(f"Warning: Failed to initialize LLM: {e}")
+                print("Agent will work in basic mode without LLM")
         
         # Initialize components
         self.memory = MemoryManager(storage_dir=memory_dir)
         self.skill_manager = SkillManager(memory_manager=self.memory)
-        self.reasoning = ReasoningEngine()
+        self.reasoning = ReasoningEngine(llm_manager=self.llm_manager)
         self.nlp = NaturalLanguageProcessor()
         
         print(f"Agent '{self.name}' initialized")
+        if self.llm_manager and self.llm_manager.is_enabled():
+            provider = self.llm_manager.get_current_provider_name()
+            print(f"LLM enabled: {provider}")
+        else:
+            print("LLM disabled: agent will work in basic mode")
         print(f"Available skills: {self.skill_manager.list_skills()}")
     
     def process(self, user_input: str, verbose: bool = True) -> str:

@@ -7,24 +7,42 @@
 git clone https://github.com/edgarmirandasilva/Katrina_jarbes.git
 cd Katrina_jarbes
 
-# 2. Instale as dependências
+# 2. Instale as dependências (opcional - funciona sem!)
 pip install -r requirements.txt
 
 # 3. Execute o exemplo básico
 python examples/basic_example.py
+
+# 4. (Opcional) Para usar LLMs, veja exemplos abaixo
 ```
 
 ## Primeiro Uso
 
-### Exemplo 1: Calculadora
+### Exemplo 1: Calculadora (Modo Básico)
 
 ```python
 from src.agent import Agent
 
+# Funciona perfeitamente sem LLM!
 agent = Agent()
 response = agent.process("calculate 42 * 2")
 print(response)  # "The result of 42 * 2 is 84"
 ```
+
+### Exemplo 1b: Com Ollama (LLM Local)
+
+```python
+from src.agent import Agent
+
+# Com LLM local para raciocínio aprimorado
+agent = Agent(
+    llm_provider="ollama",
+    llm_config={'ollama_model': 'llama2'}
+)
+response = agent.process("calculate 42 * 2")
+```
+
+Para mais sobre LLMs, veja [LLM_INTEGRATION.md](LLM_INTEGRATION.md)
 
 ### Exemplo 2: Operações com Ficheiros
 
@@ -217,6 +235,9 @@ Verifique se todas as dependências do `requirements.txt` foram instaladas.
 ## Recursos
 
 - [README Completo](README.md)
+- [Guia de Integração LLM](LLM_INTEGRATION.md) ⭐ NOVO
+- [API Documentation](API_DOCS.md)
+- [Architecture Overview](ARCHITECTURE.md)
 - [Exemplos](examples/)
 - [Documentação de Skills](src/skills/)
 - [Documentação de Memória](src/memory/)
